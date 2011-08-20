@@ -7,7 +7,7 @@ describe Maxixe::Segmenter do
       @sentence = "1234567"
       @two_grams = @sentence.each_char.each_cons(2).to_a
       @three_grams = @sentence.each_char.each_cons(3).to_a
-      @segmenter = Maxixe::Segmenter.new({"2" => "", "3" => ""}, nil)
+      @segmenter = Maxixe::Segmenter.new({})
     end
 
     it "should give all non_straddling n_grams for a given position" do
@@ -52,6 +52,16 @@ describe Maxixe::Segmenter do
     it "should average votes" do
       votes = [[1,0,1,0],[0,1,0,1]]
       @segmenter.average_votes(votes).should == [0.5, 0.5, 0.5, 0.5]
+    end
+  end
+
+  describe "Segmenting Text" do
+    before(:each) do 
+      @segmenter = Maxixe::Segmenter.new({"2"=>{"AB"=>2, "BC"=>2, "CD"=>1, "DE"=>1, "EF"=>1, "FG"=>1, "G\n"=>1, "CX"=>1, "XY"=>1, "YZ"=>1, "Z\n"=>1}, "3"=>{"ABC"=>2, "BCD"=>1, "CDE"=>1, "DEF"=>1, "EFG"=>1, "FG\n"=>1, "BCX"=>1, "CXY"=>1, "XYZ"=>1, "YZ\n"=>1}})
+    end
+
+    it "should be able to segment text" do
+      @segmenter.segment("ABCDE").should == "ABC DE"
     end
   end
 end

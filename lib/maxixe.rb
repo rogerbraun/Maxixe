@@ -106,7 +106,7 @@ module Maxixe
     end
 
     def self.generate_training_data(n, *files)
-      result = n.inject({}){|r, c_n| r[c_n] = Hash.new{0}; r} 
+      result = n.inject({}){|r, c_n| r[c_n.to_s] = Hash.new{0}; r} 
 
       files.each do |file|
         input = open(file)
@@ -114,7 +114,7 @@ module Maxixe
           n.each do |c_n|
             n_grams = line.each_char.each_cons(c_n).map(&:join).to_a
             n_grams.each do |n_gram|
-              result[c_n][n_gram] += 1
+              result[c_n.to_s][n_gram] += 1
             end
           end
         end
