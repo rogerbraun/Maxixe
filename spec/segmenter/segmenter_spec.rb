@@ -1,13 +1,13 @@
-require "./algorithm.rb"
+require "spec_helper"
 
-describe Segmenter do
+describe Maxixe::Segmenter do
   describe "internal functions" do
 
     before(:each) do 
       @sentence = "1234567"
       @two_grams = @sentence.each_char.each_cons(2).to_a
       @three_grams = @sentence.each_char.each_cons(3).to_a
-      @segmenter = Segmenter.new({"2" => "", "3" => ""}, nil)
+      @segmenter = Maxixe::Segmenter.new({"2" => "", "3" => ""}, nil)
     end
 
     it "should give all non_straddling n_grams for a given position" do
