@@ -25,7 +25,7 @@ IWANTAHOUSEFORMYDOG")
         
 ```
 
-`optimal` is now `{:n => ["2","3"], :t => 0.5, :score => 0}`. Use this to make a segmenter.
+`optimal` is now `{:n => ["2","4"], :t => 0.5, :score => 0}`. Use this to make a segmenter.
 
 Also, see http://rogerbraun.net/maxixe-a-simple-statistical-segmenter-for-any.
 
