@@ -9,7 +9,7 @@ Maxixe is an implementation of the Tango algorithm describe in the paper "Mostly
 
 Get a corpus of text you will can use to train the segmenter. Pre-segment a small number of sentences by hand. Create a large index for optimizing. Use optimized paramters for segmenting.
 
-```
+```ruby
     pre_segmented = [["MYDOGISINTHEHOUSE", "MY DOG IS IN THE HOUSE"],
                      ["FOURNICEDOGS", "FOUR NICE DOGS"],
                      ["MYCATLIKESMYDOG", "MY CAT LIKES MY DOG"]]
