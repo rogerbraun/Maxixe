@@ -1,3 +1,4 @@
+require "text"
 module Maxixe
   class Segmenter
     
@@ -98,28 +99,51 @@ module Maxixe
 
   class Trainer
 
-    def self.generate_and_dump(n, output, *files)
-      res = self.generate_training_data(n, *files)
-      File.open(output,"w") do |file|
-        Yajl::Encoder.encode res, file
-      end
-    end
-
-    def self.generate_training_data(n, *files)
+    def self.generate_corpus_from_io(n , io)
       result = n.inject({}){|r, c_n| r[c_n.to_s] = Hash.new{0}; r} 
-
-      files.each do |file|
-        input = open(file)
-        input.each_line do |line|
-          n.each do |c_n|
-            n_grams = line.each_char.each_cons(c_n).map(&:join).to_a
-            n_grams.each do |n_gram|
-              result[c_n.to_s][n_gram] += 1
-            end
+      io.each_line do |line|
+        n.each do |c_n|
+          n_grams = line.each_char.each_cons(c_n).map(&:join).to_a
+          n_grams.each do |n_gram|
+            result[c_n.to_s][n_gram] += 1
           end
         end
       end
       result
+    end
+
+    def self.optimize(index, samples)
+      res = check_recognition(index, samples)
+      min = nil
+      res.each do |n, ts|
+        ts.each do |t, score|
+          if !min or score < min[1]
+            min = [[n,t],score]
+          end
+        end
+      end 
+      {:n => min[0][0], :t => min[0][1], :score => min[1]}
+    end
+
+    def self.check_recognition(index, samples)
+      # Get all subsets of N
+      ns = 1.upto(index.keys.size).map{|i| index.keys.combination(i).to_a}.flatten(1)
+      results = ns.inject({}) do |res, n|
+        n_index = index.select{|key, value| n.include? key}
+        m = Maxixe::Segmenter.new(n_index)
+
+        t_values = ((0.1)..(1.0)).step(0.1).inject({}) do |res, t|
+          difference = samples.inject(0) do |result, (not_split, split)|
+            temp = m.segment(not_split, t)
+            result += Text::Levenshtein.distance(temp, split) 
+          end
+          res[t] = difference
+          res
+        end
+        res[n] = t_values
+        res
+      end
+      results
     end
   end
 end

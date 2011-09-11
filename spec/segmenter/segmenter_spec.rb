@@ -56,12 +56,17 @@ describe Maxixe::Segmenter do
   end
 
   describe "Segmenting Text" do
-    before(:each) do 
-      @segmenter = Maxixe::Segmenter.new({"2"=>{"AB"=>2, "BC"=>2, "CD"=>1, "DE"=>1, "EF"=>1, "FG"=>1, "G\n"=>1, "CX"=>1, "XY"=>1, "YZ"=>1, "Z\n"=>1}, "3"=>{"ABC"=>2, "BCD"=>1, "CDE"=>1, "DEF"=>1, "EFG"=>1, "FG\n"=>1, "BCX"=>1, "CXY"=>1, "XYZ"=>1, "YZ\n"=>1}})
-    end
 
-    it "should be able to segment text" do
-      @segmenter.segment("ABCDE").should == "ABC DE"
+    it "should do some examples" do 
+      index = Maxixe::Trainer.generate_corpus_from_io([3], "ILIKEMYDOG
+  THISHOUSEISMYHOUSE
+  MYDOGISSONICE
+  INMYHOUSETHEREAREFOURDOGS
+  IWANTAHOUSEFORMYDOG")
+      
+      m = Maxixe::Segmenter.new(index,0.3)
+      m.segment("FOURNICEDOGS").should == "FOUR NICE DOGS"
+      m.segment("MYDOGISINTHEHOUSE").should == "MY DOG IS IN THE HOUSE"
     end
   end
 end

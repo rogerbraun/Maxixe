@@ -2,12 +2,29 @@ require "spec_helper"
 
 describe Maxixe::Trainer do
   
-  it "should generate n-gram data from a set of files" do
+  it "should generate n-gram data from IOs" do
 
     pwd = File.dirname(__FILE__)
 
-    Maxixe::Trainer.generate_training_data([2,3], File.join(pwd, "first_file"), File.join(pwd,"second_file")).should == {"2"=>{"AB"=>2, "BC"=>2, "CD"=>1, "DE"=>1, "EF"=>1, "FG"=>1, "G\n"=>1, "CX"=>1, "XY"=>1, "YZ"=>1, "Z\n"=>1}, "3"=>{"ABC"=>2, "BCD"=>1, "CDE"=>1, "DEF"=>1, "EFG"=>1, "FG\n"=>1, "BCX"=>1, "CXY"=>1, "XYZ"=>1, "YZ\n"=>1}}
+    Maxixe::Trainer.generate_corpus_from_io([2,3], open(File.join(pwd, "first_file"))).should == {"2"=>{"AB"=>1, "BC"=>1, "CD"=>1, "DE"=>1, "EF"=>1, "FG"=>1, "G\n"=>1}, "3"=>{"ABC"=>1, "BCD"=>1, "CDE"=>1, "DEF"=>1, "EFG"=>1, "FG\n"=>1}}
 
   end
+
+  it "should be able to find the optimal threshold and n values" do
+    pre_segmented = [["MYDOGISINTHEHOUSE", "MY DOG IS IN THE HOUSE"],
+                     ["FOURNICEDOGS", "FOUR NICE DOGS"]]  
+    index = Maxixe::Trainer.generate_corpus_from_io([2,3,4,5], "ILIKEMYDOG
+THISHOUSEISMYHOUSE
+MYDOGISSONICE
+INMYHOUSETHEREAREFOURDOGS
+IWANTAHOUSEFORMYDOG")
+  
+    optimal = Maxixe::Trainer.optimize(index, pre_segmented)
+    optimal[:n].should == ["3"]
+    optimal[:score].should == 0
+    optimal[:t].should be_within(0.01).of(0.3)
+
+  end
+
 
 end

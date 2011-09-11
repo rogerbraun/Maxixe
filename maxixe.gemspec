@@ -10,11 +10,11 @@ Gem::Specification.new do |s|
   s.email       = ["maxixe@rogerbraun.net"]
   s.homepage    = "https://github.com/rogerbraun/Maxixe"
   s.summary     = %q{A small statistical segmenter for any language.}
-  s.description = %q{Maxixe is an implementation of the Tango algorithm describe in the paper "Mostly-unsupervised statistical segmentation of Japanese kanji sequences" by Ando and Lee. While the paper deals with Japanese characters, it should work on any unsegmented text given enough corpus data and a tuning of the algorithm paramenters.}
+  s.description = %q{Maxixe is an implementation of the Tango algorithm describe in the paper "Mostly-unsupervised statistical segmentation of Japanese kanji sequences" by Ando and Lee. While the paper deals with Japanese characters, it should work on any unsegmented text given enough corpus data and a tuning of the algorithm parameters.}
 
   s.rubyforge_project = "maxixe"
 
-  s.add_dependency "yajl-ruby"
+  s.add_dependency "text"
   s.add_development_dependency "rspec"
 
   s.files         = `git ls-files`.split("\n")
