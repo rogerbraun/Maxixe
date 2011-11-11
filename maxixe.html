@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>Maxixe</title>
+<!-- metadata -->
+<meta name="generator" content="S5" />
+<meta name="version" content="S5 1.1" />
+<meta name="presdate" content="20050728" />
+<meta name="author" content="Roger Braun" />
+<meta name="company" content="Complex Spiral Consulting" />
+<!-- configuration parameters -->
+<meta name="defaultView" content="slideshow" />
+<meta name="controlVis" content="hidden" />
+<!-- style sheet links -->
+<link rel="stylesheet" href="ui/default/slides.css" type="text/css" media="projection" id="slideProj" />
+<link rel="stylesheet" href="ui/default/outline.css" type="text/css" media="screen" id="outlineStyle" />
+<link rel="stylesheet" href="ui/default/print.css" type="text/css" media="print" id="slidePrint" />
+<link rel="stylesheet" href="ui/default/opera.css" type="text/css" media="projection" id="operaFix" />
+<!-- S5 JS -->
+<script src="ui/default/slides.js" type="text/javascript"></script>
+
+<link href="http://alexgorbatchev.com/pub/sh/current/styles/shThemeRDark.css" rel="stylesheet" type="text/css" />
+<script src="http://alexgorbatchev.com/pub/sh/current/scripts/shCore.js" type="text/javascript"></script>
+<script src="http://alexgorbatchev.com/pub/sh/current/scripts/shBrushRuby.js" type="text/javascript"></script>
+<script src="http://alexgorbatchev.com/pub/sh/current/scripts/shBrushPlain.js" type="text/javascript"></script>
+
+</head>
+<body>
+
+<div class="layout">
+<div id="controls"><!-- DO NOT EDIT --></div>
+<div id="currentSlide"><!-- DO NOT EDIT --></div>
+<div id="header"></div>
+<div id="footer">
+</div>
+
+</div>
+
+
+<div class="presentation">
+
+<div class="slide">
+<h1>Maxixe</h1>
+<h2>A universal segmenter for search applications</h2>
+<h3>Roger Braun</h3>
+<h4>rogerbraun.net</h4>
+</div>
+
+
+<div class="slide">
+  <h1>What is Maxixe?</h1>
+  <p class="center">Several things!</p>
+</div>
+
+
+<div class="slide">
+  <h1>A dance</h1>
+  <div class="video">
+    <iframe width="640px" height="480px" src="http://www.youtube.com/embed/9RhdcgPZ-x0?start=33" frameborder="0" style="margin:auto; display:block"></iframe>
+  </div>
+</div>
+
+<div class="slide">
+  <h1>A gemstone</h1>
+  <img class="center" src="images/maxixe_beryl.jpg"></img> 
+</div>
+
+<div class="slide">
+  <h1>A Rubygem</h1>
+  <img class="center" src="images/rubygem.jpg"></img> 
+</div>
+
+<div class="slide">
+  <h1>Problem: Searching a text</h1>
+  <ul>
+    <li>Full crawl every time - <span class="batsu">slow!</span></li>
+    <li>Build an index and search it - <span class="maru">fast!</span></li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h1>New Problem: Building an index</h1>
+  <ul>
+    <li>Go through all the words, save the position in index</li>
+    <li><span class="maru">Easy!</span></li>
+    <li>"I like dogs that like me" =&#062; <br>[["I", 1],["like", 2,5], ...]</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h1>A japanese index?</h1>
+  <ul>
+    <li><span class="batsu">Hard!</span></li>
+    <li><ruby>日本語処理能力<rt>にほんごしょりのうりょく</rt></ruby></li>
+    <li>Where are the word boundaries?</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h1>Segmenting japanese</h1>
+  <p>Lots of work!</p>
+  <ul>
+    <li>Build a grammar...</li>
+    <li>Build a dictionary...</li>
+    <li>Build a segmented corpus...</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h1>Morphological analyzers</h1>
+  <ul>
+    <li>MeCab</li>
+    <li>ChaSen</li>
+    <li>JUMAN</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h1>Why not to use them</h1>
+  <ul>
+    <li>Complicated!</li>
+    <li>External dependencies!</li>
+    <li>Inflexible!</li>
+    <li>More than we need!</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h1>A simpler way</h1>
+  <blockquote>
+    Mostly-Unsupervised Statistical Segmentation of Japanese Kanji Sequences, Ando + Lee.
+  </blockquote>
+</div>
+
+<div class="slide">
+  <h1>Really simple!</h1>
+  <img class="center" src="images/simple.png"></img> 
+</div>
+
+<div class="slide">
+  <h1>Okay, not that simple</h1>
+  <img class="center" src="images/find_x.jpg"></img>
+</div>
+
+<div class="slide">
+  <h1>The TANGO algorithm</h1>
+  <h3>Key ideas</h3>
+  <ul>
+    <li>Grab some characters: probably a word</li> 
+    <li>Or at least part of it</li>
+    <li>Count all your combinations of characters</li>
+    <li>Look if a given position is a probable word boundary by counting straddling vs. non-strddling combinations</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h1>More technical</h1>
+  <h3>Training</h3>
+  <p>For a set N={2..i} take all n-grams, where n is in N, of a large corpus and count their occurences.</p>
+  <h3>Segmenting</h3>
+  <p>For every possible word boundary: Take the straddling and non-straddling n-grams. If there are more non-straddling n-grams, we probably are at a word boundary.</p>
+  <p>Split on local maxima, or when a certain threshold is reached.</p>
+  
+</div>
+
+<div class="slide">
+  <h1>What's <span class="maru">good?</span></h1>
+  <ul>
+    <li>Segmented text</li>
+    <li>Training corpus can be unsegmented!</li>
+    <li>Really flexible: Can learn from input data</li>
+    <li>Universal! Works with any language!</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h1>What's <span class='batsu'>bad?</span></h1>
+  <ul>
+    <li>No morphological data</li>
+    <li>Two magic parameters: t and N</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h1>Maxixe</h1>
+  <ul>
+    <li>Ruby implementation of TANGO</li>
+    <li>150 LOC</li>
+    <li><a href="https://github.com/rogerbraun/Maxixe">https://github.com/rogerbraun/Maxixe</a></li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h1>Example Usage</h1>
+  <h3>Corpus (dogs.txt)</h3>
+  <pre class="brush: text; gutter:false; toolbar: false">  ILIKEMYDOG
+  THISHOUSEISMYHOUSE
+  MYDOGISSONICE
+  INMYHOUSETHEREAREFOURDOGS
+  IWANTAHOUSEFORMYDOG</pre>
+  <h3>Training</h3>
+  <pre class="brush: ruby; gutter: false; toolbar: false">n_gram_count = Maxixe::Trainer.generate_training_data([3,4], "dogs.txt")
+  </pre>
+</div>
+
+<div class="slide">
+  <h1>Example Usage</h1>
+  <h3>Segmenting</h3>
+  <pre class="brush: ruby; gutter: false; toolbar: false">s = Maxixe::Segmenter.new(n_gram_count, 0.5)
+s.segment "MYDOGISINTHEHOUSE"
+=&#062; "MY DOG IS IN THE HOUSE"
+
+</pre> 
+</div>
+
+<div class="slide">
+  <h1>Optimizing your segmenter</h1>
+  <ul>
+    <li>Remember N and t?</li>
+    <li>You could just guess them... <span class="batsu">unpractical</span></li>
+    <li>Maxixe does the guessing for you!</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h1>Optimizer Usage</h1>
+  <pre class="brush:ruby; gutter: false; toolbar: false">
+pre_segmented = 
+  [["MYDOGISINTHEHOUSE", "MY DOG IS IN THE HOUSE"],
+  ["FOURNICEDOGS", "FOUR NICE DOGS"], 
+  ["MYCATLIKESMYDOG", "MY CAT LIKES MY DOG"]]
+
+n_gram_count = 
+  Maxixe::Trainer.generate_corpus_from_io(
+    [2,3,4,5], 
+    open("dogs.txt")
+
+best = 
+  Maxixe::Trainer.optimize(
+    n_gram_count, 
+    pre_segmented)
+  </pre>
+</div>
+
+<div class="slide">
+  <h1>Results</h1>
+  <p>"<span class="maru">Best</span>" now contains: </p>
+  <pre class="brush: ruby; gutter: false; toolbar:false">
+{:score =&gt; 0, :t =&gt; 0.5, :n =&gt; ["2","4"]}
+</pre>
+
+</div>
+
+<div class="slide">
+  <h1>What does this do?</h1>
+  <ul>
+    <li>Try out all combinations of N and t</li>
+    <li>Calculate score by Levenshtein distance</li>
+    <li>Lowest score with fewest n-grams wins</li>
+  </ul>
+</div>
+
+<div class="slide">
+  <h1>Wrapping up: When to use Maxixe</h1>
+  <ul>
+   <li>You have a corpus, you want easy, fast segmenting</li>
+   <li>You care mostly about tokenizing</li>
+   <li>You don't care about morphological data</li>
+   <li>You don't care about traditional grammar</li>
+   <li>You have a very dynamic search space (e.g. new words, netspeak, common errors)</li>
+  </ul>
+
+<div class="slide">
+  <h1>Try it out!</h1>
+  <p class="center" style="margin-top: 20%; font-size: 300%">THANK YOU</p>
+  <p class="center">@rogerbraun // rogerbraun.net // github.com/rogerbraun</p>
+</div>
+</div>
+  
+<div class="handout">
+[any material that should appear in print but not on the slide]
+</div>
+</div>
+
+
+</div>
+
+<script type="text/javascript">
+     SyntaxHighlighter.all()
+</script>
+
+</body>
+</html>
